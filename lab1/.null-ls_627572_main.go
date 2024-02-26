@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 )
 
 type iNode struct {
@@ -22,20 +21,20 @@ func (il *iList) push(newVal int) {
 }
 
 func (il *iList) pop() int {
-	node := il.first
-	prev := node
-	for node != nil && node.next != nil {
-		prev = node
-		node = node.next
+	np := il.first
+	prev := np
+	for np.next != nil {
+		prev = np
+		np = np.next
 	}
 	prev.next = nil
-	return node.value
+	return np.value
 }
 
 func (il *iList) swap(firstIndex, secondIndex int) error {
 	firstNode := il.first
 	for i := 0; i < firstIndex; i++ {
-		if firstNode != nil {
+		if firstNode.next == nil {
 			return errors.New("Index out of range")
 		}
 		firstNode = firstNode.next
@@ -43,7 +42,7 @@ func (il *iList) swap(firstIndex, secondIndex int) error {
 
 	secondNode := il.first
 	for i := 0; i < secondIndex; i++ {
-		if secondNode != nil {
+		if secondNode.next == nil {
 			return errors.New("Index out of range")
 		}
 		secondNode = secondNode.next
@@ -55,23 +54,12 @@ func (il *iList) swap(firstIndex, secondIndex int) error {
 }
 
 func (il *iList) print() {
-	node := il.first
-	for node != nil {
-		fmt.Printf("%v ", node.value)
-		node = node.next
-	}
-	fmt.Println()
+
 }
 
 func main() {
 	var integerList iList
-	integerList.print()
 	integerList.push(6)
 	integerList.push(0)
 	integerList.push(3)
-	integerList.print()
-	integerList.swap(0, 2)
-	integerList.print()
-	fmt.Println(integerList.pop())
-	integerList.print()
 }
