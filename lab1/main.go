@@ -1,7 +1,7 @@
 package main
 
 
-import "fmt"
+// import "fmt"
 
 type iNode struct {
   value int
@@ -13,7 +13,10 @@ type iList struct {
 }
 
 func (il *iList) push(newVal int) {
-
+  var newNode iNode
+  newNode.value = newVal
+  newNode.next = il.first
+  il.first = &newNode
 }
 
 func (il *iList) pop() int {
@@ -29,5 +32,8 @@ func (il *iList) print() {
 }
 
 func main() {
-  fmt.Println("xD1")
+  var integerList iList
+  integerList.push(6)
+  integerList.push(0)
+  integerList.push(3)
 }
