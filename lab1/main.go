@@ -20,7 +20,14 @@ func (il *iList) push(newVal int) {
 }
 
 func (il *iList) pop() int {
-  return 1
+  np := il.first
+  prev := np
+  for np.next != nil {
+    prev = np
+    np = np.next
+  }
+  prev.next = nil
+  return np.value
 }
 
 func (il *iList) swap(firstIndex, secondIndex int) {
