@@ -7,6 +7,13 @@ bool check_prime(int number)
   return false;
 }
 
+
+bool check_fib(int number)
+{
+  return false;
+}
+
+
 bool calculate_prime_fibs(int max_number, int min_number)
 {
   return false;
