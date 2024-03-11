@@ -1,6 +1,11 @@
 #include <stdio.h>
 
 
+int calculate_prime_fibs(int max_number, int min_number)
+{
+  return 0;
+}
+
 int main(int argc, char *argv[])
 {
   
