@@ -1,10 +1,17 @@
 #include <stdio.h>
+#include <stdbool.h>
 
 
-int calculate_prime_fibs(int max_number, int min_number)
+bool check_prime(int number)
 {
-  return 0;
+  return false;
 }
+
+bool calculate_prime_fibs(int max_number, int min_number)
+{
+  return false;
+}
+
 
 int main(int argc, char *argv[])
 {
