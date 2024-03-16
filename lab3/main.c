@@ -4,7 +4,6 @@
 
 bool check_prime(int number)
 {
-	
   if (number < 2)
 		return false;
 
@@ -15,12 +14,30 @@ bool check_prime(int number)
   }
   
    return true; 
-
 }
 
 
 bool check_fib(int number)
 {
+  if (number == 1 || number == 2)
+		return true;
+ 
+	int fib1 = 1;
+	int fib2 = 1;
+	int fib = fib1 + fib2;
+ 
+	while (fib < number)
+  {
+		fib2 = fib1;
+		fib1 = fib;
+		fib = fib1 + fib2;
+	}
+ 
+	if (number == fib)
+  {
+		return true;
+  }
+  
   return false;
 }
 
