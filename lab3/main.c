@@ -1,5 +1,7 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <time.h>
 
 
 bool check_prime(int number)
@@ -42,13 +44,13 @@ bool check_fib(int number)
 }
 
 
-int calculate_prime_fibs(int max_number, int min_number)
+int calculate_prime_fibs(int min_number, int max_number)
 {
  	int count = 0;
  
-	for (int i = 0; i < max_n; i++)
+	for (int i = 0; i < max_number; i++)
   {
-		if (is_fibbonaci(i) && is_prime(i))
+		if (check_prime(i) && check_fib(i))
     {
 			count += 1;
 			printf("prime fib: %d\n", i);
@@ -63,9 +65,19 @@ int main(int argc, char *argv[])
 {
   
   int min_number = 1;
-  int max_number = 10000000;
+  int max_number = 1000000;
+  
+ 	clock_t t;
+ 	t = clock();
+ 
+	printf("Timer starts\n");
 
   printf("Number of prime fibs between %d and %d is: %d\n", min_number, max_number, calculate_prime_fibs(min_number, max_number));
   
+  printf("Timer ends\n");
+	t = clock() - t;
+ 
+	double time_taken = ((double)t)/CLOCKS_PER_SEC;
+  printf("The program took %f seconds to execute\n", time_taken);
   return 0;
 }
