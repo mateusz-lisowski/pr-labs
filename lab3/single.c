@@ -50,7 +50,7 @@ int calculate_prime_fibs(int min_number, int max_number)
  
 	for (int i = 0; i < max_number; i++)
   {
-		if (check_prime(i) && check_fib(i))
+		if (check_fib(i) && check_prime(i))
     {
 			count += 1;
 			printf("prime fib: %d\n", i);
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 {
   
   int min_number = 1;
-  int max_number = 1000000;
+  int max_number = 1000000000;
   
  	clock_t t;
  	t = clock();
