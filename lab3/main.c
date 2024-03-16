@@ -42,9 +42,20 @@ bool check_fib(int number)
 }
 
 
-bool calculate_prime_fibs(int max_number, int min_number)
+int calculate_prime_fibs(int max_number, int min_number)
 {
-  return false;
+ 	int count = 0;
+ 
+	for (int i = 0; i < max_n; i++)
+  {
+		if (is_fibbonaci(i) && is_prime(i))
+    {
+			count += 1;
+			printf("prime fib: %d\n", i);
+		}
+	}
+ 
+	return count;
 }
 
 
