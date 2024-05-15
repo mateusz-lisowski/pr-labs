@@ -78,7 +78,8 @@ public class Main {
                 threadPool.submit(() -> {
                     try {
                         boolean isPrime = primeChecker.isPrime(number);
-                        System.out.printf("%d is %s%n", number, isPrime ? "a prime number" : "not a prime number");
+                        System.out.printf("number " + number + " is " +
+                                (isPrime ? "a prime number" : "not a prime number"));
                     } finally {
                         latch.countDown();
                     }
