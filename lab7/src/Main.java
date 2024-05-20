@@ -7,21 +7,19 @@ public class Main {
         private final Map<Long, Boolean> cache = new ConcurrentHashMap<>();
 
         public boolean isPrime(final long x) {
+
             if (cache.containsKey(x)) {
                 System.out.printf("\tCache hit for number: %d%n", x);
                 return cache.get(x);
             }
 
-            synchronized (this) {
-                if (cache.containsKey(x)) {
-                    System.out.printf("\tCache hit for number: %d%n", x);
-                    return cache.get(x);
-                }
+            boolean result = computeIfPrime(x);
 
-                boolean result = computeIfPrime(x);
+            synchronized (this) {
                 cache.put(x, result);
-                return result;
             }
+
+            return result;
         }
 
         private boolean computeIfPrime(long x) {
