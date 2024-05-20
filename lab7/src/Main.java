@@ -4,42 +4,33 @@ import java.util.concurrent.*;
 
 public class Main {
     private static class CachingPrimeChecker {
-        private final Map<Long, Boolean> cache = new ConcurrentHashMap<>();
+        private final Map<Long, CompletableFuture<Boolean>> cache = new ConcurrentHashMap<>();
 
-        public boolean isPrime(final long x) {
-
-            if (cache.containsKey(x)) {
-                System.out.printf("\tCache hit for number: %d%n", x);
-                return cache.get(x);
-            }
-
-            boolean result = computeIfPrime(x);
-
-            synchronized (this) {
-                cache.put(x, result);
-            }
-
-            return result;
+        public boolean isPrime(final long x) throws ExecutionException, InterruptedException {
+            CompletableFuture<Boolean> result = cache.computeIfAbsent(x, this::computeIfPrime);
+            return result.get();
         }
 
-        private boolean computeIfPrime(long x) {
-            final String currentThreadName = Thread.currentThread().getName();
-            System.out.printf("\t[%s] Running computation for: %d%n", currentThreadName, x);
-            try {
-                // simulating long computations
-                Thread.sleep(TimeUnit.SECONDS.toMillis(2));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            if (x < 2) {
-                return false;
-            }
-            for (long i = 2; i * i <= x; i++) {
-                if (x % i == 0) {
+        private CompletableFuture<Boolean> computeIfPrime(long x) {
+            return CompletableFuture.supplyAsync(() -> {
+                final String currentThreadName = Thread.currentThread().getName();
+                System.out.printf("\t[%s] Running computation for: %d%n", currentThreadName, x);
+                try {
+                    // simulating long computations
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(2));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if (x < 2) {
                     return false;
                 }
-            }
-            return true;
+                for (long i = 2; i * i <= x; i++) {
+                    if (x % i == 0) {
+                        return false;
+                    }
+                }
+                return true;
+            });
         }
     }
 
@@ -77,6 +68,8 @@ public class Main {
                     try {
                         boolean isPrime = primeChecker.isPrime(number);
                         System.out.printf("%d is %s%n", number, isPrime ? "a prime number" : "not a prime number");
+                    } catch (ExecutionException | InterruptedException e) {
+                        System.err.printf("Error checking if %d is a prime number: %s%n", number, e.getMessage());
                     } finally {
                         latch.countDown();
                     }
