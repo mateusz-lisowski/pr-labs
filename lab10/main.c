@@ -22,11 +22,6 @@ typedef struct {
     int waiting_count;
 } Monitor;
 
-volatile sig_atomic_t timeout_occurred = 0;
-
-void handle_timeout(int sig) {
-    timeout_occurred = 1;
-}
 
 void monitor_init(Monitor *monitor) {
     monitor->queue_id = msgget(KEY, IPC_CREAT | 0666);
@@ -62,6 +57,9 @@ void wyjscie(Monitor *monitor) {
 }
 
 int oczekuj(Monitor *monitor) {
+
+    wyjscie(monitor);
+
     monitor->waiting_count++;
     Message msg;
     msg.mtype = 2;
@@ -69,40 +67,22 @@ int oczekuj(Monitor *monitor) {
         perror("msgsnd oczekuj");
         exit(1);
     }
-
-    struct sigaction sa;
-    sa.sa_handler = handle_timeout;
-    sa.sa_flags = 0;
-    sigemptyset(&sa.sa_mask);
-    if (sigaction(SIGALRM, &sa, NULL) == -1) {
-        perror("sigaction");
-        exit(1);
-    }
-
-    alarm(TIMEOUT);
-    if (msgrcv(monitor->queue_id, &msg, sizeof(msg.count), 3, 0) == -1) {
-        if (errno == EINTR && timeout_occurred) {
-            printf("Proces %d: timeout oczekuj\n", getpid());
-            monitor->waiting_count--;
-            return -1; // Timeout occurred
-        } else {
-            perror("msgrcv oczekuj");
-            exit(1);
-        }
-    }
-
-    alarm(0); // Cancel the alarm
     monitor->waiting_count--;
+
+    wejscie(monitor);
+
     return 0; // Success
 }
 
 void notify(Monitor *monitor) {
-    if (monitor->waiting_count > 0) {
-        Message msg;
-        msg.mtype = 3; // Changed to type 3 to release the waiting process
-        if (msgsnd(monitor->queue_id, &msg, sizeof(msg.count), 0) == -1) {
-            perror("msgsnd notify");
-            exit(1);
+    for (int i = 0; i < monitor->waiting_count; i++) {
+        if (monitor->waiting_count > 0) {
+            Message msg;
+            msg.mtype = 3; // Changed to type 3 to release the waiting process
+            if (msgsnd(monitor->queue_id, &msg, sizeof(msg.count), 0) == -1) {
+                perror("msgsnd notify");
+                exit(1);
+            }
         }
     }
 }
